@@ -247,7 +247,7 @@ public class Regle
     }
   }
 
-  private int[] positionDichoRecursifTerme(String nom, int début, int fin,
+  private int[] positionDichoRecursifTerme(String nom, int debut, int fin,
       int[] tabReponses)
   // SE : recherche nom, de façon récursive, entre les indices début et fin de
   // la liste des termes. début et fin
@@ -256,13 +256,13 @@ public class Regle
   // tabReponses : la première cellule est à -1 si le terme apparaît déjà
   // la seconde à la place où doit être inséré le terme
   {
-    if (début > fin)
+    if (debut > fin)
     {
-      tabReponses[0] = début;
-      tabReponses[1] = début;
+      tabReponses[0] = debut;
+      tabReponses[1] = debut;
       return tabReponses; // et on sort
     }
-    int milieu = (début + fin) / 2;
+    int milieu = (debut + fin) / 2;
     int compare = ensembleTermes.get(milieu).getLabel().compareTo(nom);
     if (compare == 0)// Si le terme de nom "nom" existe déjà
     {
@@ -271,7 +271,7 @@ public class Regle
       return tabReponses; // et on sort
     }
     if (compare > 0)
-      return positionDichoRecursifTerme(nom, début, milieu - 1, tabReponses);
+      return positionDichoRecursifTerme(nom, debut, milieu - 1, tabReponses);
     return positionDichoRecursifTerme(nom, milieu + 1, fin, tabReponses);
   }
 
