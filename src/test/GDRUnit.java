@@ -31,7 +31,6 @@ public class GDRUnit
     gExpected.addArc(0,3);
     gExpected.addArc(1,2);
     gExpected.addArc(2,0);
-    gExpected.addArc(3,0);
     
     assertTrue(gdr.getGraph().equals(gExpected));
 

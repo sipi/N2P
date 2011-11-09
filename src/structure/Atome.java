@@ -99,7 +99,7 @@ public class Atome
       if( (!t1.isConstant() && !t2.isConstant()) || (t1.isConstant() && !t2.isConstant()) )
       {
         Terme t = t2.clone();
-        clone_a.substitue(t , t1);
+        clone_a.substitue(t, t1);
         clone_this.substitue(t, t1);
       }
       else if(!t1.isConstant() && t2.isConstant())
@@ -243,7 +243,13 @@ public class Atome
     // la methode clone d'ArrayList n'effectue pas une copie profonde donc :
     ArrayList<Terme> liste = new ArrayList<Terme>(this.getListeTermes().size());
     for(Terme t: this.getListeTermes())
-      liste.add(t.clone());
+    {
+      int index = liste.indexOf(t);
+      if(index != -1)
+        liste.add(liste.get(index));
+      else
+        liste.add(t.clone());
+    }
     
     return new Atome(label, liste);
   }
