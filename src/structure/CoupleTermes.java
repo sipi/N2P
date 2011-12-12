@@ -2,10 +2,10 @@ package structure;
 
 import pi.util.Pair;
 
-public class CoupleTermes extends Pair<Terme,Terme>
+public class CoupleTermes extends Pair<Term,Term>
 {
   
-  public CoupleTermes(Terme first, Terme second)
+  public CoupleTermes(Term first, Term second)
   {
     super(first,second);
   }
@@ -15,7 +15,7 @@ public class CoupleTermes extends Pair<Terme,Terme>
    * @param t le terme que l'on veut substituer 
    * @return true si la substitution a pu être appliquée
    */
-  public boolean substitue(Terme t)
+  public boolean substitue(Term t)
   {
     if(t.equals(this.first))
     {
@@ -24,6 +24,11 @@ public class CoupleTermes extends Pair<Terme,Terme>
     }
       
     return false;
+  }
+  
+  public CoupleTermes clone()
+  {
+    return new CoupleTermes(this.first.clone(), this.second.clone());
   }
 
 }

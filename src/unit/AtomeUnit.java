@@ -1,12 +1,10 @@
-package test;
+package unit;
 
-import structure.Atome;
-import structure.Terme;
+import structure.Atom;
+import structure.Term;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class AtomeUnit
@@ -15,7 +13,7 @@ public class AtomeUnit
   @Test 
   public void testInitFromString()
   {
-    Atome a = new Atome("p(x,x)");
+    Atom a = new Atom("p(x,x)");
     assertTrue( (a.getListeTermes().get(0)) == (a.getListeTermes().get(1)) );
   }
 
@@ -24,9 +22,9 @@ public class AtomeUnit
   {
     try
     {
-      Atome atome = new Atome("test(x,'B',x,z)");
+      Atom atome = new Atom("test(x,'B',x,z)");
       atome.addSuffixOnAllVar("1");
-      assertTrue(atome.equals(new Atome("test(x1,'B',x1,z1)")));
+      assertTrue(atome.equals(new Atom("test(x1,'B',x1,z1)")));
       assertTrue(atome.getListeTermes().get(0) == atome.getListeTermes().get(2));
     }
     catch(Exception e)
@@ -38,32 +36,32 @@ public class AtomeUnit
   @Test
   public void testIsUnifiable()
   {
-    Atome a1 = new Atome("p(x,y,'A',x)");
-    Atome a2 = new Atome("p('B',x,x,y)");
+    Atom a1 = new Atom("p(x,y,'A',x)");
+    Atom a2 = new Atom("p('B',x,x,y)");
     assertTrue(a1.isUnifiables(a2));
       
-    a1 = new Atome("p(x,'A',x)");
-    a2 = new Atome("p(y,y,'B')");
+    a1 = new Atom("p(x,'A',x)");
+    a2 = new Atom("p(y,y,'B')");
     assertFalse(a1.isUnifiables(a2));
     
-    a1 = new Atome("p(x,x)");
-    a2 = new Atome("p('B','C')");
+    a1 = new Atom("p(x,x)");
+    a2 = new Atom("p('B','C')");
     assertFalse(a1.isUnifiables(a2));   
   }
   
   @Test
   public void testSubstitue()
   {
-    Atome a = new Atome("p(x,x)");
-    a.substitue(new Terme("x"), new Terme("A", true));
-    assertTrue(a.equals(new Atome("p('A','A')")));
+    Atom a = new Atom("p(x,x)");
+    a.substitue(new Term("x"), new Term("A", true));
+    assertTrue(a.equals(new Atom("p('A','A')")));
   }
   
   @Test 
   public void testClone()
   {
-    Atome a = new Atome("p(x,x)");
-    Atome b = a.clone();
+    Atom a = new Atom("p(x,x)");
+    Atom b = a.clone();
     assertTrue(b.getListeTermes().get(0) == b.getListeTermes().get(1));
   }
   

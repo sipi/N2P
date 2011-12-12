@@ -28,7 +28,7 @@ import pi.util.Graph;
 public class GDR
 {
   private Graph g;
-  private Regle[] map;
+  private Rule[] map;
   
   
   // ************************************************************************
@@ -38,8 +38,8 @@ public class GDR
   public GDR(BaseConnaissances bc)
   {
     this.g = GDR.generateGDR(bc);
-    this.map = new Regle[bc.getBaseRegles().size()];
-    this.map = (Regle[]) bc.getBaseRegles().toArray(this.map);
+    this.map = new Rule[bc.getBaseRegles().size()];
+    this.map = (Rule[]) bc.getBaseRegles().toArray(this.map);
   }
   
   // ************************************************************************

@@ -10,7 +10,7 @@
 
 package structure;
 
-public class Terme
+public class Term
 {
 	private String label;//le nom du terme (par exemple : x, 'toto')
 	private boolean is_constant;//vrai si le terme courant est une constante, faux sinon (c'est une variable)
@@ -24,7 +24,7 @@ public class Terme
    * Constructeur de la classe Terme pour créer une variable
    * @param label le label du terme (qui doit être une variable)
    */
-  public Terme(String label)
+  public Term(String label)
   {
     this.init(label, is_constant);
   }
@@ -34,7 +34,7 @@ public class Terme
 	 * @param label le label du terme
 	 * @param is_constant boolean qui indique si le terme est une constante ou pas (et alors c'est une variable)
 	 */
-	public Terme(String label, boolean is_constant)
+	public Term(String label, boolean is_constant)
 	{
 		this.init(label, is_constant);
 	}
@@ -93,9 +93,9 @@ public class Terme
   //************************************************************************
   
   @Override
-  public Terme clone()
+  public Term clone()
   {
-    return new Terme(new String(this.getLabel()), this.isConstant());
+    return new Term(new String(this.getLabel()), this.isConstant());
   }
   
 	/**
@@ -123,7 +123,7 @@ public class Terme
     if(!o.getClass().equals(this.getClass()))
       return false;
     
-    Terme t = (Terme)o;
+    Term t = (Term)o;
     return t.is_constant == is_constant && t.label.equals(this.label);
   }
 	

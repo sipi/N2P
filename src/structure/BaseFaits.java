@@ -8,8 +8,8 @@ import java.util.*;
  */
 public class BaseFaits
 {
-	private ArrayList<Atome> listeAtomes;//l'ensemble des faits (atomes)
-	private ArrayList<Terme> ensembleTermes;//l'ensemble des termes présents
+	private AtomSet listeAtomes;//l'ensemble des faits (atomes)
+	private ArrayList<Term> ensembleTermes;//l'ensemble des termes présents
 	
 	
 	//************************************************************************************
@@ -22,8 +22,8 @@ public class BaseFaits
 	 */
 	public BaseFaits()
 	{
-		listeAtomes = new ArrayList<Atome>();
-		ensembleTermes = new ArrayList<Terme>();
+		listeAtomes = new AtomSet();
+		ensembleTermes = new ArrayList<Term>();
 	}
 	
 	/**
@@ -32,8 +32,8 @@ public class BaseFaits
 	 */
 	public BaseFaits(String baseFaits)
 	{
-		listeAtomes = new ArrayList<Atome>();
-		ensembleTermes = new ArrayList<Terme>();
+		listeAtomes = new AtomSet();
+		ensembleTermes = new ArrayList<Term>();
 		creerBaseFaits(baseFaits);	
 	}
 	
@@ -45,7 +45,7 @@ public class BaseFaits
    * Ajoute des faits à la base de faits s'ils n'apparaissaient pas déjà
    * @param faits les faits à ajouter (seuls ceux n'apparaissant pas dans la base seront ajoutés)
    */
-  public void ajouterNouveauxFaits(ArrayList<Atome> faits)
+  public void ajouterNouveauxFaits(ArrayList<Atom> faits)
   // Spec Interne : la liste des termes apparaissant dans la base est également
   // mise à jour
   {
@@ -57,7 +57,7 @@ public class BaseFaits
    * Ajoute un fait à la base de faits s'il n'apparait pas déjà
    * @param fait le fait à ajouter (ne sera ajouté que s'il n'apparait pas déjà)
    */
-  public void ajouterNouveauFait(Atome fait)
+  public void ajouterNouveauFait(Atom fait)
   // Spec Interne : la liste des termes apparaissant dans la base est également
   // mise à jour
   {
@@ -66,7 +66,7 @@ public class BaseFaits
         listeAtomes.add(fait);
         for(int j=0;j<fait.getListeTermes().size();j++)
         {
-          Terme t = new Terme(fait.getListeTermes().get(j).getLabel(),fait.getListeTermes().get(j).isConstant());//On crée un nouveau terme
+          Term t = new Term(fait.getListeTermes().get(j).getLabel(),fait.getListeTermes().get(j).isConstant());//On crée un nouveau terme
           t = ajouterTerme(t); // ceci ajoute le terme dans la liste des termes de la base de faits s'il n'existait pas déjà
           listeAtomes.get(listeAtomes.size()-1).getListeTermes().set(j,t);
         }
@@ -78,9 +78,9 @@ public class BaseFaits
    * @param t le terme à potentiellement ajouter
    * @return un sommet terme, soit t s'il a été inséré, soit le sommet terme qui existait déjà dans la liste des sommets termes
    */
-  public Terme ajouterTerme(Terme t)
+  public Term ajouterTerme(Term t)
   {
-    for(Terme terme : ensembleTermes)
+    for(Term terme : ensembleTermes)
     {
       if(terme.equals(t))
         return terme;
@@ -91,7 +91,7 @@ public class BaseFaits
   } 
   
   
-  public boolean contains(Atome a)
+  public boolean contains(Atom a)
   {
     return listeAtomes.contains(a);
   }
@@ -101,21 +101,21 @@ public class BaseFaits
   // GETTERS / SETTERS
   // ************************************************************************
 
-	public ArrayList<Atome> getListeAtomes() {
+	public AtomSet getListeAtomes() {
 		return listeAtomes;
 	}
 
-	public void setListeAtomes(ArrayList<Atome> listeAtomes) {
+	public void setListeAtomes(AtomSet listeAtomes) {
 		this.listeAtomes = listeAtomes;
 	}
 
-	public ArrayList<Terme> getEnsembleTermes() {
-		return (ArrayList<Terme>)ensembleTermes.clone();
+	public ArrayList<Term> getEnsembleTermes() {
+		return (ArrayList<Term>)ensembleTermes.clone();
 	}
   
-  public void addAll(ArrayList<Atome> list)
+  public void addAll(ArrayList<Atom> list)
   {
-    for(Atome a: list)
+    for(Atom a: list)
       this.ajouterNouveauFait(a);
   }
 
@@ -134,11 +134,11 @@ public class BaseFaits
     String s = "nombre de faits : "+listeAtomes.size()+ "\n";
     
     s+="liste des faits : ";   
-    for(Atome a : listeAtomes)
+    for(Atom a : listeAtomes)
       s+=a+" ; ";
     
     s+="\nliste des termes : ";
-    for(Terme t : ensembleTermes)
+    for(Term t : ensembleTermes)
       s+=t+" ; ";
     
     return s;
@@ -151,14 +151,14 @@ public class BaseFaits
 	private void creerBaseFaits(String baseFaits)
 	//Prérequis : le format de la base de faits est supposé correct
    	{
-		Terme t;
+		Term t;
    		StringTokenizer st = new StringTokenizer(baseFaits,";");
    		while(st.hasMoreTokens())
    		{
    			String s = st.nextToken(); // s représente un atome
-   			Atome a = new Atome(s);
+   			Atom a = new Atom(s);
    			ajouterAtome(a);//On ajoute un atome à la liste des atomes
-   			ArrayList<Terme> termes = a.getListeTermes();
+   			ArrayList<Term> termes = a.getListeTermes();
    			for (int i = 0; i < termes.size(); i ++)
    			{
    				t = ajouterTerme(termes.get(i));
@@ -174,7 +174,7 @@ public class BaseFaits
 	 * @param a l'atome à ajouter
 	 * @return la position où l'atome 'a' a été ajouté (s'il existait déjà il est ajouté en double)
 	 */
-	private int ajouterAtome(Atome a)
+	private int ajouterAtome(Atom a)
 	{
 		listeAtomes.add(a);
 		return listeAtomes.size()-1;
@@ -185,7 +185,7 @@ public class BaseFaits
 	 * @param a l'atome dont on teste l'existence
 	 * @return vrai si l'atome existe déjà, faux sinon
 	 */
-	public boolean atomeExiste(Atome a)
+	public boolean atomeExiste(Atom a)
 	{
 		for(int i=0;i<listeAtomes.size();i++)
 		{

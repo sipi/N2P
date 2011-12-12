@@ -1,4 +1,4 @@
-package test;
+package unit;
 
 import static org.junit.Assert.*;
 
@@ -6,10 +6,10 @@ import org.junit.Test;
 
 import pi.util.AdjacencyListGraph;
 
-import structure.Atome;
+import structure.Atom;
 import structure.BaseConnaissances;
 import structure.GDR;
-import structure.Regle;
+import structure.Rule;
 
 public class GDRUnit
 {
@@ -18,10 +18,10 @@ public class GDRUnit
   public void test()
   {
     BaseConnaissances bc = new BaseConnaissances();
-    bc.ajouterRegle(new Regle("q(x,x);p('B',x);p(x,'A')"));
-    bc.ajouterRegle(new Regle("p(x,'B');p(y,'C');r(x,y,'A',x)"));
-    bc.ajouterRegle(new Regle("r('B',x,x,y);q(x,y)"));
-    bc.ajouterRegle(new Regle("p(x,y);p(y,z);q('B','C')"));
+    bc.ajouterRegle(new Rule("q(x,x);p('B',x);p(x,'A')"));
+    bc.ajouterRegle(new Rule("p(x,'B');p(y,'C');r(x,y,'A',x)"));
+    bc.ajouterRegle(new Rule("r('B',x,x,y);q(x,y)"));
+    bc.ajouterRegle(new Rule("p(x,y);p(y,z);q('B','C')"));
     
     GDR gdr = new GDR(bc);
     

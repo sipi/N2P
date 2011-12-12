@@ -13,11 +13,11 @@ package structure;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class Regle
+public class Rule
 {
-  private ArrayList<Atome> hypothese;// la liste des atomes hypothèses
-  private Atome conclusion;// la conclusion de la règle
-  private ArrayList<Terme> ensembleTermes;// l'ensemble des termes présents dans la règle
+  private AtomSet hypothese;// la liste des atomes hypothèses
+  private Atom conclusion;// la conclusion de la règle
+  private ArrayList<Term> ensembleTermes;// l'ensemble des termes présents dans la règle
 
   // ************************************************************************
   // CONSTRUCTEURS
@@ -31,16 +31,16 @@ public class Regle
    *          "atome1;atome2;...atomek", où les (k-1) premiers atomes forment
    *          l'hypothèse, et le dernier forme la conclusion
    */
-  public Regle(String regle)
+  public Rule(String regle)
   {
-    hypothese = new ArrayList<Atome>();
-    ensembleTermes = new ArrayList<Terme>();
+    hypothese = new AtomSet();
+    ensembleTermes = new ArrayList<Term>();
 
     StringTokenizer st = new StringTokenizer(regle, ";");
     while (st.hasMoreTokens())
     {
       String s = st.nextToken(); // s représente un atome
-      this.hypotheseAdd(new Atome(s));
+      this.hypotheseAdd(new Atom(s));
     }
     // on a mis tous les atomes créés en hypothèse
     // reste à tranférer le dernier en conclusion
@@ -48,30 +48,23 @@ public class Regle
     hypothese.remove(hypothese.size() - 1);
   }
   
-  public Regle(Regle regle)
-  {
-    this.hypothese = (ArrayList<Atome>) regle.hypothese.clone();
-    this.conclusion = regle.conclusion.clone();
-    this.ensembleTermes = (ArrayList<Terme>) regle.ensembleTermes.clone();
-  }
-
   // ************************************************************************
   // METHODS
   // ************************************************************************
 
-  public boolean hypotheseContains(Atome atome)
+  public boolean hypotheseContains(Atom atome)
   { 
     return hypothese.contains(atome);
   }
   
-  public ArrayList<Regle> propositionnaliser(ArrayList<Terme> constantList)
+  public ArrayList<Rule> propositionnaliser(ArrayList<Term> constantList)
   {
-    ArrayList<Regle> br = new ArrayList<Regle>();    
+    ArrayList<Rule> br = new ArrayList<Rule>();    
     SubstitutionsList sl = SubstitutionsList.generateSubstitutionsList(this.getEnsembleTermes(), constantList);
 
     for(Substitution s: sl)
     {
-      Regle new_r = this.clone();
+      Rule new_r = this.clone();
       s.substitue(new_r);
       br.add(new_r);
     }
@@ -79,9 +72,9 @@ public class Regle
     return br;
   }
   
-  public boolean canTrigger(Regle r)
+  public boolean canTrigger(Rule r)
   {
-    for(Atome a: r.hypothese)
+    for(Atom a: r.hypothese)
       if(this.conclusion.isUnifiables(a))
         return true;
         
@@ -96,7 +89,7 @@ public class Regle
   /**
    * @return l'hypothèse de la règle
    */
-  public ArrayList<Atome> getHypothese()
+  public AtomSet getHypothese()
   {
     return hypothese;
   }
@@ -104,7 +97,7 @@ public class Regle
   /**
    * @return la conclusion de la règle
    */
-  public Atome getConclusion()
+  public Atom getConclusion()
   {
     return conclusion;
   }
@@ -112,7 +105,7 @@ public class Regle
   /**
    * @return l'ensemble de termes de la règle
    */
-  public ArrayList<Terme> getEnsembleTermes()
+  public ArrayList<Term> getEnsembleTermes()
   {
     return ensembleTermes;
   }
@@ -122,15 +115,15 @@ public class Regle
   // ************************************************************************
 
     @Override
-  public Regle clone()
+  public Rule clone()
   {
-    Regle r = new Regle();
+    Rule r = new Rule();
     
     // la methode clone d'ArrayList n'effectue pas une copie profonde donc :
-    r.ensembleTermes = new ArrayList<Terme>(this.getEnsembleTermes().size());
+    r.ensembleTermes = new ArrayList<Term>(this.getEnsembleTermes().size());
 
-    r.hypothese = new ArrayList<Atome>(this.getHypothese().size());
-    for (Atome a : this.getHypothese())
+    r.hypothese = new AtomSet(this.getHypothese().size());
+    for (Atom a : this.getHypothese())
       r.hypotheseAdd(a.clone());
     // fin copie profonde
     
@@ -172,16 +165,16 @@ public class Regle
   // PRIVATE METHODS
   // ************************************************************************
 
-  private Regle(){}
+  private Rule(){}
   
   /**
    * Ajoute un atome a l'hypothese et ses termes à la liste des termes
    */
   
-  private void hypotheseAdd(Atome a)
+  private void hypotheseAdd(Atom a)
   {
     this.hypothese.add(a);
-    ArrayList<Terme> termes = a.getListeTermes();
+    ArrayList<Term> termes = a.getListeTermes();
     for (int i = 0; i < termes.size(); i++)
     {
       // ajout à la liste des termes
@@ -197,7 +190,7 @@ public class Regle
    * @return un sommet terme, soit t s'il a été inséré, soit le sommet terme qui
    *         existait déjà dans la liste des sommets termes
    */
-  private Terme addTerme(Terme t)
+  private Term addTerme(Term t)
   // SI : dans le cas où le terme t n'existe pas déjà dans la liste des sommets
   // termes, on l'ajoute à la bonne place
   // et on lui donne comme voisin le sommet relation se trouvant à l'index
@@ -225,7 +218,7 @@ public class Regle
    *          le sommet terme à insérer
    * @return la position où doit être ajoutée le sommet terme
    */
-  private int[] positionDichoTerme(Terme t)
+  private int[] positionDichoTerme(Term t)
   // SE : si t se trouve dans la liste des termes, retourne son indice.
   // sinon retourne l'indice où il devrait être inséré
   // SI : appelle la méthode positionDichoRecursif en indiquant comme paramètre

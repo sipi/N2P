@@ -39,15 +39,15 @@ public class SubstitutionsList extends ArrayList<Substitution>
    * @param constants
    * @return 
    */
-  public static SubstitutionsList generateSubstitutionsList(ArrayList<Terme> variables, ArrayList<Terme> constants)
+  public static SubstitutionsList generateSubstitutionsList(ArrayList<Term> variables, ArrayList<Term> constants)
   {
     SubstitutionsList substitutions_list = new SubstitutionsList();
 
-    for(Terme variable: variables)
+    for(Term variable: variables)
     {
       ArrayList<CoupleTermes> list_ct = new ArrayList<CoupleTermes>();
       
-      for(Terme constant: constants)
+      for(Term constant: constants)
       {
         if(!variable.isConstant() || variable.equals(constant))
           list_ct.add( new CoupleTermes(variable,constant) );

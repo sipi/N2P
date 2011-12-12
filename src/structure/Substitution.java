@@ -9,7 +9,7 @@ public class Substitution extends ArrayList<CoupleTermes>
    * applique la substitution à r
    * @param r
    */
-  public void substitue(Regle r)
+  public void substitue(Rule r)
   {
     this.substitue(r.getEnsembleTermes());
   }
@@ -18,9 +18,9 @@ public class Substitution extends ArrayList<CoupleTermes>
    * applique la substitution à l'ensemble des termes de list_terme
    * @param list_terme
    */
-  public void substitue(ArrayList<Terme> list_terme)
+  public void substitue(ArrayList<Term> list_terme)
   {
-    for(Terme t: list_terme)
+    for(Term t: list_terme)
       this.substitue(t);    
   }
   
@@ -29,7 +29,7 @@ public class Substitution extends ArrayList<CoupleTermes>
    * @param t
    * @return true si la substitution a pu être appliquée
    */
-  public boolean substitue(Terme t)
+  public boolean substitue(Term t)
   {
     for(CoupleTermes ct : this)
       if(ct.substitue(t))
@@ -38,6 +38,7 @@ public class Substitution extends ArrayList<CoupleTermes>
     return false;
   }
   
+    
   /**
    * Ajoute un couple de terme (a, b) à la substitution si 
    * il n'existe aucun couple (a, x) dans la substitution
@@ -82,6 +83,15 @@ public class Substitution extends ArrayList<CoupleTermes>
     }
 
     return true;
+  }
+  
+  public Substitution clone()
+  {
+    Substitution s = new Substitution();
+    for(CoupleTermes ct: this)
+      s.add(ct.clone());
+        
+    return s;
   }
   
   public String toString()

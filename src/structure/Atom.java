@@ -32,17 +32,17 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class Atome
+public class Atom
 {
   private String predicat_label; // le prédicat de l'atome
   //@FIXME use an set, because listeTermes shouldn't accept multiple equals element
-  private ArrayList<Terme> listeTermes; // la liste de termes de cet atome
+  private ArrayList<Term> listeTermes; // la liste de termes de cet atome
 
   // ************************************************************************
   // CONSTRUCTEURS
   // ************************************************************************
   
-  public Atome(String label, ArrayList<Terme> termes)
+  public Atom(String label, ArrayList<Term> termes)
   {
     this.predicat_label = label;
     this.listeTermes = termes;
@@ -59,7 +59,7 @@ public class Atome
    * avec MOT = ([a-z]|[A-Z]|[0-1])+
    * et TERME = 'MOT'|MOT
    */
-  public Atome(String s)
+  public Atom(String s)
   {
     this.initFromString(s);
   }
@@ -75,36 +75,36 @@ public class Atome
    * @param t
    *          le terme à ajouter
    */
-  public void addTerme(Terme t)
+  public void addTerme(Term t)
   {
     listeTermes.add(t);
   }
   
-  public boolean isUnifiables(Atome a)
+  public boolean isUnifiables(Atom a)
   {  
     if(!this.predicatEqualsPredicatOf(a))
       return false;
     
-    Atome clone_a = a.clone();
-    Atome clone_this = this.clone();
+    Atom clone_a = a.clone();
+    Atom clone_this = this.clone();
     
     clone_this.addSuffixOnAllVar("1");
     clone_a.addSuffixOnAllVar("2");
     
     for(int index = 0; index < this.listeTermes.size(); ++index)
     {
-      Terme t1 = clone_this.listeTermes.get(index);
-      Terme t2 = clone_a.listeTermes.get(index);
+      Term t1 = clone_this.listeTermes.get(index);
+      Term t2 = clone_a.listeTermes.get(index);
       
       if( (!t1.isConstant() && !t2.isConstant()) || (t1.isConstant() && !t2.isConstant()) )
       {
-        Terme t = t2.clone();
+        Term t = t2.clone();
         clone_a.substitue(t, t1);
         clone_this.substitue(t, t1);
       }
       else if(!t1.isConstant() && t2.isConstant())
       {
-        Terme t = t1.clone();
+        Term t = t1.clone();
         clone_a.substitue(t, t2);
         clone_this.substitue(t, t2);
       }
@@ -116,37 +116,54 @@ public class Atome
   
   public void addSuffixOnAllVar(String suffix)
   {
-    Set<Terme> set = new LinkedHashSet<Terme>(this.listeTermes);
-    for(Terme t: set)
+    Set<Term> set = new LinkedHashSet<Term>(this.listeTermes);
+    for(Term t: set)
       if(!t.isConstant())
         t.setLabel(t.getLabel()+suffix);
   }
   
-  public void substitue(Terme a, Terme b)
+  public void substitue(Term a, Term b)
   {
     int index = this.listeTermes.indexOf(a);
     if(index != -1)
       this.listeTermes.get(index).set(b.getLabel(), b.isConstant());
   }
   
+  public void substitue(Substitution s)
+  {
+    for(CoupleTermes ct: s)
+      this.substitue(ct.first, ct.second);
+  }
+  
   // ************************************************************************
   // GETTERS / SETTERS
   // ************************************************************************
   
-  public ArrayList<Terme> getListeTermes()
+  public ArrayList<Term> getListeTermes()
   {
     return listeTermes;
   }
   
-  public ArrayList<Terme> getAllConstants()
+  public ArrayList<Term> getAllConstants()
   {
-    ArrayList<Terme> constants = new ArrayList<Terme>();
-    for(Terme t: listeTermes)
+    ArrayList<Term> constants = new ArrayList<Term>();
+    for(Term t: listeTermes)
     {
       if(t.isConstant())
         constants.add(t);
     }
     return constants;
+  }
+  
+  public ArrayList<Term> getAllVariables()
+  {
+    ArrayList<Term> vars = new ArrayList<Term>();
+    for(Term t: listeTermes)
+    {
+      if(!t.isConstant())
+        vars.add(t);
+    }
+    return vars;
   }
 
   public String getLabel()
@@ -161,7 +178,7 @@ public class Atome
    * @param a l'atome à tester par rapport à l'atome courant
    * @return vrai si les deux atomes ont même prédicat, faux sinon
    */
-  public boolean predicatEqualsPredicatOf(Atome a)
+  public boolean predicatEqualsPredicatOf(Atom a)
   {
     return this.predicat_label.equals(a.predicat_label)
         && this.listeTermes.size() == a.listeTermes.size();
@@ -173,7 +190,7 @@ public class Atome
   
   private void initFromString(String s)
   {
-    listeTermes = new ArrayList<Terme>();
+    listeTermes = new ArrayList<Term>();
     
     if (s.charAt(s.length() - 1) != ')') // c'est donc un atome sans termes
       predicat_label = s;
@@ -210,7 +227,7 @@ public class Atome
           {
             constanteTerme = false;
           }
-          Terme t = new Terme(nomTerme, constanteTerme);// On crée un nouveau terme
+          Term t = new Term(nomTerme, constanteTerme);// On crée un nouveau terme
           
           int index = this.listeTermes.indexOf(t);
           if(index != -1)
@@ -236,13 +253,13 @@ public class Atome
    * @return a new instance of Atome which is equals to this instance
    */
   @Override
-  public Atome clone()
+  public Atom clone()
   {
     String label = new String(this.getLabel());
     
     // la methode clone d'ArrayList n'effectue pas une copie profonde donc :
-    ArrayList<Terme> liste = new ArrayList<Terme>(this.getListeTermes().size());
-    for(Terme t: this.getListeTermes())
+    ArrayList<Term> liste = new ArrayList<Term>(this.getListeTermes().size());
+    for(Term t: this.getListeTermes())
     {
       int index = liste.indexOf(t);
       if(index != -1)
@@ -251,7 +268,7 @@ public class Atome
         liste.add(t.clone());
     }
     
-    return new Atome(label, liste);
+    return new Atom(label, liste);
   }
   
   /**
@@ -283,7 +300,7 @@ public class Atome
     if (!o.getClass().equals(this.getClass())) //@FIXME user instance of
       return false;
 
-    Atome a = (Atome) o;
+    Atom a = (Atom) o;
     if (!this.predicatEqualsPredicatOf(a))
       return false;
 

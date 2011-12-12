@@ -2,17 +2,17 @@ package structure;
 
 import java.util.ArrayList;
 
-public class BaseRegles extends ArrayList<Regle>
+public class BaseRegles extends ArrayList<Rule>
 {
 
   //******************************************************************************
   //  METHODS  
   //******************************************************************************
   
-  public ArrayList<Terme> getConstantsOfConclusion()
+  public ArrayList<Term> getConstantsOfConclusion()
   {
-    ArrayList<Terme> constants = new ArrayList<Terme>();
-    for(Regle r: this)
+    ArrayList<Term> constants = new ArrayList<Term>();
+    for(Rule r: this)
       constants.addAll(r.getConclusion().getAllConstants());
     
     return constants;
@@ -27,7 +27,7 @@ public class BaseRegles extends ArrayList<Regle>
   {
     String s = "";
     
-    for(Regle r: this)
+    for(Rule r: this)
       s += r+"\n";
     
     return s;

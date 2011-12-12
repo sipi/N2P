@@ -22,9 +22,11 @@
  * @email c.sipieter@gmail.com
  */
 
+import java.util.LinkedList;
 import java.util.Scanner;
 import structure.*;
 
+import structure.*;
 public class N2PCore {
 
   private BaseConnaissances bc;
@@ -90,9 +92,9 @@ public class N2PCore {
       else if(isQuestion(line))
       {
         if(isFait(line.substring(0,line.length()-1)))
-          System.out.println(bc.valueOf(new Atome(line.substring(0,line.length()-1))));
+          System.out.println(bc.valueOf(new Atom(line.substring(0,line.length()-1))));
         else if(isRegle(line.substring(0,line.length()-1)))
-          System.out.println(bc.instanceOf(new Regle(line.substring(0,line.length()-1))));
+          System.out.println(bc.instanceOf(new Rule(line.substring(0,line.length()-1))));
         else
           System.out.println("Question incorrect");
           
@@ -102,10 +104,10 @@ public class N2PCore {
         if(line.charAt(line.length()-1) != ')')
           line = line.substring(0,line.length()-1);
         
-        bc.ajouterFait(new Atome(line));
+        bc.ajouterFait(new Atom(line));
       }
       else if(isRegle(line))
-        bc.ajouterRegle(new Regle(line));
+        bc.ajouterRegle(new Rule(line));
       
       else
        printMisunderstoodRequest();
