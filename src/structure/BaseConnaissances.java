@@ -1,14 +1,32 @@
+/**
+ * Copyright (C) 2011 Thibaut Marmin
+ * Copyright (c) 2011 Clément Sipieter
+ * 
+ * This file is part of N2P.
+ *
+ * N2P is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License.
+ *
+ * N2P is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with N2P. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package structure;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import pi.util.Pair;
+import java.util.LinkedList;
 
 public class BaseConnaissances
 {
-
   private BaseFaits bf;// base de faits
   private BaseRegles br;// base de règles
   private boolean is_saturated;
@@ -42,9 +60,7 @@ public class BaseConnaissances
   // ************************************************************************************
 
   /**
-   * Chargement d'une base de connaissance depuis un fichier au format suivant:
-   * nbr_faits fait1 fait2 ... faitn nbr_regles regle1 regle2 ... reglem
-   * 
+   * Chargement d'une base de connaissance depuis un fichier 
    * @param path
    *          le chemin vers le fichier à charger
    * @return une instance de BaseConnaissances initialiser avec les faits et
@@ -53,25 +69,32 @@ public class BaseConnaissances
   public Boolean load(String path)
   {
     BufferedReader reader = null;
-    int nbFaits;
-    int nbRegles;
+    String line;
+    int line_nbr = 0;
 
     this.is_saturated = false;
 
     try
     {
       reader = new BufferedReader(new FileReader(path));
-
-      // Lecture des faits
-      nbFaits = Integer.decode(reader.readLine());
-      for (int i = 0; i < nbFaits; ++i)
-        bf.ajouterNouveauFait(new Atom(reader.readLine()));
-
-      // Lecture des regles
-      nbRegles = Integer.decode(reader.readLine());
-      for (int i = 0; i < nbRegles; ++i)
-        br.add(new Rule(reader.readLine()));
-
+      while ((line = reader.readLine()) != null)
+      {
+        ++line_nbr;
+        if (RuleBasedSystemLib.isFact(line))
+        {
+          bf.ajouterNouveauFait(new Atom(line));
+        } 
+        else if (RuleBasedSystemLib.isRule(line))
+        {
+          br.add(new Rule(line));
+        }
+        else if(RuleBasedSystemLib.isBlank(line))
+        {}
+        else
+        {
+          System.out.println("Error line "+line_nbr+" : "+line);
+        }
+      }
     } catch (IOException e)
     {
       System.err.println("io exception : ");
@@ -83,14 +106,6 @@ public class BaseConnaissances
   }
 
   /**
-   * Réinitialisation de la base de connaissance
-   */
-  public void clear()
-  {
-    this.init(new BaseFaits(), new BaseRegles());
-  }
-
-  /**
    * Saturation de la base de faits
    */
   public void saturation()
@@ -99,22 +114,22 @@ public class BaseConnaissances
     Atom a;
     Rule r;
     
-    while(true)
+    while (true)
     {
       new_faits.clear();
-      for(Rule rule: this.br)
+      for (Rule rule : this.br)
       {
         r = rule.clone();
-        for(Substitution h : RuleBasedSystemLib.homomorphisme(r.getHypothese(), 
-            this.bf.getListeAtomes()))
+        for (Substitution h : RuleBasedSystemLib.homomorphisme(
+            r.getHypothese(), this.bf.getListeAtomes()))
         {
           a = r.getConclusion();
           a.substitue(h);
-          if(!new_faits.contains(a) && !this.bf.contains(a))
+          if (!new_faits.contains(a) && !this.bf.contains(a))
             new_faits.add(a);
         }
       }
-      if(new_faits.size() == 0)
+      if (new_faits.size() == 0)
         break;
       else
         this.bf.addAll(new_faits);
@@ -132,8 +147,27 @@ public class BaseConnaissances
 
     return bf.contains(a);
   }
+  
+  /**
+   * Retourne l'ensemble des substitution rendant vrai r
+   * @param r
+   * @return
+   */
+  public LinkedList<Substitution> instanceOf(AtomSet atomset)
+  {
+    if (!this.is_saturated)
+      this.saturation();
+   
+    SubstitutionsList subList = new SubstitutionsList();
+    return RuleBasedSystemLib.homomorphisme(atomset, bf.getListeAtomes());
+  }
 
-  public SubstitutionsList instanceOf(Rule r)
+  /**
+   * Retourne l'ensemble des substitution rendant vrai r
+   * @param r
+   * @return
+   */
+  public SubstitutionsList instanceO0f(Rule r)
   {
     if (!this.is_saturated)
       this.saturation();
@@ -142,7 +176,6 @@ public class BaseConnaissances
     SubstitutionsList subList = new SubstitutionsList();
     SubstitutionsList sublisttmp;
     Substitution s;
-    ArrayList<CoupleTermes> listcouple;
 
     Atom at = r.getConclusion();
     for (Atom fa : bf.getListeAtomes())
@@ -188,9 +221,18 @@ public class BaseConnaissances
     return subList;
   }
 
+  /**
+   * Réinitialisation de la base de connaissance
+   */
+  public void clear()
+  {
+    this.init(new BaseFaits(), new BaseRegles());
+  }
+  
   // ******************************************************************************
   // GETTERS / SETTERS
   // ******************************************************************************
+  
   public BaseFaits getBaseFaits()
   {
     return bf;
@@ -241,27 +283,4 @@ public class BaseConnaissances
     this.is_saturated = false;
   }
 
-  private void propositionnalisation()
-  {
-    // ***********************************************************************
-    // Récupération d'une liste des constantes présente dans la base de fait
-    ArrayList<Term> constantList = this.bf.getEnsembleTermes();
-    constantList.addAll(br.getConstantsOfConclusion());
-
-    // ***********************************************************************
-    // Remplacement de la base de règles par la propositionalisation de celle-ci
-    this.br = this.generateBrPropositionnaliser(constantList);
-
-  }
-
-  private BaseRegles generateBrPropositionnaliser(ArrayList<Term> constantList)
-  {
-    BaseRegles br_prop = new BaseRegles();
-    for (Rule r : this.br)
-      // pour toutes les règles r de this.br
-      // ajouter la propositionnalisation de r dans br_prop
-      br_prop.addAll(r.propositionnaliser(constantList));
-
-    return br_prop;
-  }
 }

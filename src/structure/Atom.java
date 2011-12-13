@@ -1,6 +1,7 @@
 /**
 * Copyright (C) 2011 Thibaut Marmin
 * Copyright (c) 2011 Clément Sipieter
+* 
 * This file is part of N2P.
 *
 * N2P is free software: you can redistribute it and/or modify

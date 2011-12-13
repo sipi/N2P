@@ -1,9 +1,6 @@
 package structure;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import pi.util.ArraySet;
@@ -136,6 +133,165 @@ public class RuleBasedSystemLib
       return this.constantes;
     }
     
+  }
+  
+//@TODO ameliorer la machine à état :
+  //  -> créer une structure récursive
+  //  -> créer des constantes nommées pour les états.
+  
+  /**
+   * Cette fonction permet de tester si la chaîne de caractère passé en paramètre peut
+   * être considéré comme un fait.
+   * 
+   * Un fait doit être de la forme : 
+   * MOT\(CONSTANTE(,CONSTANTE)*);?
+   * 
+   * avec     MOT = ([a-z]|[A-Z]|[0-1])+
+   * et CONSTANTE = 'MOT'
+   * 
+   * @param string
+   * @return true si string correspond au pattern d'un fait
+   */
+  public static boolean isFact(String string)
+  {
+    int state = 0;
+    
+    for(char c: string.toCharArray())
+    {
+      switch(state)
+      {          
+        case 0 :
+          if(Character.isLetter(c) || Character.isDigit(c))
+            state = 1;
+          else
+            return false;
+          
+          break;
+          
+        case 1 :
+          if(Character.isLetter(c) || Character.isDigit(c))
+          {}
+          else if(c == '(')
+            state = 2;
+          else
+            return false;
+          
+          break;  
+          
+        case 2:
+          if(c == '\'')
+            state = 3;
+          else
+            return false;
+          
+        case 3:
+          if(Character.isLetter(c) || Character.isDigit(c))
+          {}
+          else if(c == '\'')
+            state = 4;
+          else
+            return false;
+          
+          break;
+          
+        case 4:
+          if(c == ')')
+            state = 5;
+          else if(c == ',')
+            state = 2;
+          
+          break;
+          
+        case 5:
+          if(c != ' ' && c != ';')
+            return false;
+          
+          break;       
+      }
+    }
+
+    return state == 5;
+  }
+  
+   /**
+   * Cette fonction permet de tester si la chaîne de caractère passé en paramètre peut
+   * être considéré comme une règle.
+   * 
+   * Une règle doit être de la forme : 
+   * ATOME(;ATOME)*;?
+   * 
+   * avec MOT = ([a-z]|[A-Z]|[0-1])+
+   *    TERME = 'MOT'|MOT
+   * et ATOME = MOT\(TERME(,TERME)*)
+   * 
+   * @param string
+   * @return true si string correspond au pattern d'un fait
+   */
+  public static boolean isRule(String string)
+  {
+    int state = 0;
+    
+    for(char c: string.toCharArray())
+    {
+      switch(state)
+      {          
+        case 0 :
+          if(Character.isLetter(c) || Character.isDigit(c))
+            state = 1;
+          else
+            return false;
+
+          break;
+
+        case 1 :
+          if(Character.isLetter(c) || Character.isDigit(c))
+          {}
+          else if(c == '(')
+            state = 2;
+          else
+            return false;
+
+          break;  
+
+        case 2:
+          if(Character.isLetter(c) || Character.isDigit(c) || c == '\'' || c == ' ' || c == ',')
+          {}
+          else if(c == ')')
+            state = 3;
+          else
+            return false;
+
+          break;
+
+        case 3:
+          if(c == ';')
+            state = 4;
+          else
+            return false;
+
+          break;  
+
+        case 4 :
+          if(Character.isLetter(c) || Character.isDigit(c))
+            state = 1;
+          else
+            return false;
+
+          break;
+      }
+    }
+
+    return state == 4 || state == 3;
+  }
+  
+  public static boolean isBlank(String string)
+  {
+    for(char c: string.toCharArray())
+    {
+      if(c != ' ' && c != '\t')
+        return false;
+    }
+    return true;
   }
   
   

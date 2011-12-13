@@ -1,4 +1,4 @@
-package unit;
+package structure.unit;
 
 import structure.Atom;
 import structure.Term;
@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class AtomeUnit
+public class AtomUnit
 {
   
   @Test 
