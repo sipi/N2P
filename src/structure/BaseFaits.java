@@ -190,25 +190,7 @@ public class BaseFaits
 	 */
 	public boolean atomeExiste(Atom a)
 	{
-	  System.out.println("In existe");
 	  return listeAtomes.contains(a);
-		/*for(int i=0;i<listeAtomes.size();i++)
-		{
-			if(listeAtomes.get(i).predicatEqualsPredicatOf(a))
-			{
-				int j=0;
-				for(j=0;j<a.getListeTermes().size();j++)
-				{
-					if(!a.getListeTermes().get(j).equals(listeAtomes.get(i).getListeTermes().get(j)))
-						break;
-				}
-				if(j==a.getListeTermes().size())
-					return true;
-			}
-		}*/
-    //System.out.println("False");
-
-		//return false;
 	}
 	
 	
