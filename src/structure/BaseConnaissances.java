@@ -97,8 +97,7 @@ public class BaseConnaissances
       }
     } catch (IOException e)
     {
-      System.err.println("io exception : ");
-      e.printStackTrace();
+      System.out.println("Erreur lors de la lecture du fichier");
       return false;
     }
 
@@ -126,14 +125,20 @@ public class BaseConnaissances
           a = r.getConclusion();
           a.substitue(h);
           if (!new_faits.contains(a) && !this.bf.contains(a))
-            new_faits.add(a);
+          {
+            System.out.println("Add "+a);
+            new_faits.add(a.clone());
+            System.out.println(new_faits);
+          }
         }
       }
-      if (new_faits.size() == 0)
-        break;
+      if (new_faits.size() == 0)     
+        break;     
       else
         this.bf.addAll(new_faits);
+
     }
+
   }
 
   /**

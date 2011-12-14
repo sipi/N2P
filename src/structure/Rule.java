@@ -75,7 +75,7 @@ public class Rule
   public boolean canTrigger(Rule r)
   {
     for(Atom a: r.hypothese)
-      if(this.conclusion.isUnifiables(a))
+      if(this.conclusion.isUnifiable(a))
         return true;
         
     return false;

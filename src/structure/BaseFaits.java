@@ -61,8 +61,11 @@ public class BaseFaits
   // Spec Interne : la liste des termes apparaissant dans la base est également
   // mise à jour
   {
+    System.out.println("Ajouter nouveau faits");
       if(!atomeExiste(fait))
       {
+        System.out.println("not exist");
+
         listeAtomes.add(fait);
         for(int j=0;j<fait.getListeTermes().size();j++)
         {
@@ -187,7 +190,9 @@ public class BaseFaits
 	 */
 	public boolean atomeExiste(Atom a)
 	{
-		for(int i=0;i<listeAtomes.size();i++)
+	  System.out.println("In existe");
+	  return listeAtomes.contains(a);
+		/*for(int i=0;i<listeAtomes.size();i++)
 		{
 			if(listeAtomes.get(i).predicatEqualsPredicatOf(a))
 			{
@@ -200,8 +205,10 @@ public class BaseFaits
 				if(j==a.getListeTermes().size())
 					return true;
 			}
-		}
-		return false;
+		}*/
+    //System.out.println("False");
+
+		//return false;
 	}
 	
 	

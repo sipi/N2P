@@ -38,15 +38,15 @@ public class AtomUnit
   {
     Atom a1 = new Atom("p(x,y,'A',x)");
     Atom a2 = new Atom("p('B',x,x,y)");
-    assertTrue(a1.isUnifiables(a2));
+    assertTrue(a1.isUnifiable(a2));
       
     a1 = new Atom("p(x,'A',x)");
     a2 = new Atom("p(y,y,'B')");
-    assertFalse(a1.isUnifiables(a2));
+    assertFalse(a1.isUnifiable(a2));
     
     a1 = new Atom("p(x,x)");
     a2 = new Atom("p('B','C')");
-    assertFalse(a1.isUnifiables(a2));   
+    assertFalse(a1.isUnifiable(a2));   
   }
   
   @Test

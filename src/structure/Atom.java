@@ -81,7 +81,7 @@ public class Atom
     listeTermes.add(t);
   }
   
-  public boolean isUnifiables(Atom a)
+  public boolean isUnifiable(Atom a)
   {  
     if(!this.predicatEqualsPredicatOf(a))
       return false;
