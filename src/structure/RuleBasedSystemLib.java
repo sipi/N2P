@@ -98,10 +98,12 @@ public class RuleBasedSystemLib
   
   private static AtomSet[] getAtomRank(AtomSet atomset, ArraySet<Term> vars)
   {
+    //initialisation
     AtomSet[] atom_rank = new AtomSet[vars.size()];
     for(int i = 0; i<vars.size(); ++i)
       atom_rank[i] = new AtomSet();
     
+    //
     for(Atom a: atomset)
     {
       int rank = 0;
@@ -134,6 +136,12 @@ public class RuleBasedSystemLib
     }
     
   }
+  
+  //***************************************************************************
+  //***************************************************************************
+  //***************************************************************************
+  //***************************************************************************
+
   
 //@TODO ameliorer la machine à état :
   //  -> créer une structure récursive

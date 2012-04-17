@@ -61,11 +61,8 @@ public class BaseFaits
   // Spec Interne : la liste des termes apparaissant dans la base est également
   // mise à jour
   {
-    System.out.println("Ajouter nouveau faits");
       if(!atomeExiste(fait))
       {
-        System.out.println("not exist");
-
         listeAtomes.add(fait);
         for(int j=0;j<fait.getListeTermes().size();j++)
         {
