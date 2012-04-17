@@ -122,14 +122,12 @@ public class BaseConnaissances
         for (Substitution h : RuleBasedSystemLib.homomorphisme(
             r.getHypothese(), this.bf.getListeAtomes()))
         {
-          a = r.getConclusion();
+          a = r.getConclusion().clone();
           a.substitue(h);
+          
           if (!new_faits.contains(a) && !this.bf.contains(a))
-          {
-            System.out.println("Add "+a);
             new_faits.add(a.clone());
-            System.out.println(new_faits);
-          }
+        
         }
       }
       if (new_faits.size() == 0)     
